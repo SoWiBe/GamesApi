@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace GamesApi.Infrastructure.MongoDb
 {
-    internal class MongoDbWorker<T> : IDbWorker<T>
+    public class MongoDbWorker<T> : IDbWorker<T>
     {
         private readonly ILogger<MongoDbWorker<T>> _logger;
         private readonly IMongoDbContext<T> _context;
