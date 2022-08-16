@@ -20,7 +20,7 @@ namespace GamesApi.Web.Endpoints.GamesEndpoints
         [FeatureGroupName("Users")]
         private async Task<string> GetUsers([FromServices] IMediator mediator, HttpContext context)
             => await mediator.Send(new GetUsersRequest(), context.RequestAborted);
-
+          
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
         [FeatureGroupName("Profiles")]

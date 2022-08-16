@@ -1,17 +1,33 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using Calabonga.OperationResults;
+using Calabonga.UnitOfWork;
+using GamesApi.Domain.Base;
+using GamesApi.Web.Definitions.MongoDb.Models;
+using MediatR;
 
 namespace GamesApi.Web.Endpoints.UsersEndpoints.Queries
 {
-    public record GetUserRequest : IRequest<string>;
+    public record GetUserRequest(Guid id) : IRequest<OperationResult<UserModel>>;
 
-    public class GetUserRequestHandler : RequestHandler<GetUserRequest, string>
+    public class GetUserRequestHandler : RequestHandler<GetUserRequest, OperationResult<UserModel>>
     {
-        private readonly IHttpContextAccessor _contextAccessor;
-        public GetUserRequestHandler(IHttpContextAccessor contextAccessor) => _contextAccessor = contextAccessor;
+        private readonly IMapper _mapper;
+        private readonly IDbWorker<UserModel> _repository;
 
-        protected override string Handle(GetUserRequest request)
+        public GetUserRequestHandler(IMapper mapper, IDbWorker<UserModel> repository)
         {
-            var user = 
+            _mapper = mapper;
+            _repository = repository;
+        }
+
+        protected override async Task<OperationResult<UserModel>> Handle(GetUserRequest request)
+        {
+            var id = request.id;
+            var operation = OperationResult.CreateResult<UserModel>();
+
+            var userFromDb = await _repository.GetRecordsByFilter(x => new Guid(x.Id) == id);
+            operation.Result = userFromDb.First();
+            return operation;
         }
     }
 }
