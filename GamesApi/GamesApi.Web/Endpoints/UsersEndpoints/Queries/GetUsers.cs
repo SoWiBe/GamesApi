@@ -13,8 +13,8 @@ namespace GamesApi.Web.Endpoints.GamesEndpoints.Queries
 
         protected override string Handle(GetUsersRequest request)
         {
-            var users = ClaimsHelper.GetValues<string>((ClaimsIdentity)user.Identity!, ClaimTypes.Role);
-            return users;
+            string result = "11";
+            return result;
         }
     }
 }

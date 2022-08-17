@@ -7,9 +7,9 @@ using MediatR;
 
 namespace GamesApi.Web.Endpoints.UsersEndpoints.Queries
 {
-    public record GetUserRequest(Guid id) : IRequest<Task<OperationResult<UserModel>>>;
+    public record GetUserRequest(Guid id) : IRequest<OperationResult<UserModel>>;
 
-    public class GetUserRequestHandler : RequestHandler<GetUserRequest, Task<OperationResult<UserModel>>>
+    public class GetUserRequestHandler : IRequestHandler<GetUserRequest, OperationResult<UserModel>>
     {
         private readonly IMapper _mapper;
         private readonly IDbWorker<UserModel> _repository;
@@ -20,14 +20,13 @@ namespace GamesApi.Web.Endpoints.UsersEndpoints.Queries
             _repository = repository;
         }
 
-        
-        protected override async Task<OperationResult<UserModel>> Handle(GetUserRequest request)
+        public async Task<OperationResult<UserModel>> Handle(GetUserRequest request, CancellationToken cancellationToken)
         {
             var id = request.id;
             var operation = OperationResult.CreateResult<UserModel>();
 
-            var userFromDb = await _repository.GetRecordsByFilter(x => new Guid(x.Id) == id);
-            operation.Result = userFromDb.First();
+            var userFromDb = _repository.GetRecordsByFilter(x => new Guid(x.Id) == id);
+            operation.Result = userFromDb.Result.First();
             return operation;
         }
     }

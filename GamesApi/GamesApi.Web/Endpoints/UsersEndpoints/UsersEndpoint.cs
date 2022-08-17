@@ -1,4 +1,6 @@
-﻿using GamesApi.Web.Definitions.Base;
+﻿using Calabonga.OperationResults;
+using GamesApi.Web.Definitions.Base;
+using GamesApi.Web.Definitions.MongoDb.Models;
 using GamesApi.Web.Endpoints.GamesEndpoints.Queries;
 using GamesApi.Web.Endpoints.UsersEndpoints.Queries;
 using MediatR;
@@ -11,8 +13,8 @@ namespace GamesApi.Web.Endpoints.GamesEndpoints
     {
         public override void ConfigureApplication(WebApplication app, IWebHostEnvironment env)
         {
-            app.MapGet("/api/get-users", GetUsers).ExcludeFromDescription();
-            app.MapGet("/api/get-user/{id}", GetUserInfo).ExcludeFromDescription();
+            app.MapGet("/api/get-users", GetUsers);
+            app.MapGet("/api/get-user/{id}", GetUserInfo);
         }
 
         [ProducesResponseType(200)]
@@ -23,8 +25,8 @@ namespace GamesApi.Web.Endpoints.GamesEndpoints
           
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
-        [FeatureGroupName("Profiles")]
-        private async Task<string> GetUserInfo([FromServices] IMediator mediator, HttpContext context)
-           => await mediator.Send(new GetUserRequest(), context.RequestAborted);
+        [FeatureGroupName("Users")]
+        private async Task<OperationResult<UserModel>> GetUserInfo([FromServices] IMediator mediator, HttpContext context, Guid id)
+           => await mediator.Send(new GetUserRequest(id), context.RequestAborted);
     }
 }
