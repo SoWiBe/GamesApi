@@ -86,7 +86,7 @@ namespace GamesApi.Infrastructure.MongoDb
 
             try
             {
-                var filter = Builders<T>.Filter.Eq("_id", ObjectId.Parse(record.Id));
+                var filter = Builders<T>.Filter.Eq("_id", record.Id);
                 var updateResult = await _collection.ReplaceOneAsync(filter, record);
 
                 result.Result = updateResult.IsModifiedCountAvailable;

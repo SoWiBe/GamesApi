@@ -30,6 +30,7 @@ namespace GamesApi.Web.Endpoints.EventItemsEndpoints.Queries
 
         public async Task<OperationResult<EventItemViewModel>> Handle(PutEventItemRequest eventItemRequest, CancellationToken cancellationToken)
         {
+            
             var operation = OperationResult.CreateResult<EventItemViewModel>();
             var repository = _unitOfWork.GetRepository<EventItem>();
             var entity = await repository.GetFirstOrDefaultAsync(predicate: x => x.Id == eventItemRequest.Id, disableTracking: false);

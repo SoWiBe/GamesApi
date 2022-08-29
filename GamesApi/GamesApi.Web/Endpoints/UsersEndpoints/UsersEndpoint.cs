@@ -16,7 +16,7 @@ namespace GamesApi.Web.Endpoints.GamesEndpoints
             app.MapGet("/api/get-users", GetUsers);
             app.MapGet("/api/get-user/{id}/{game}", GetUserInfo);
             app.MapPost("/api/add-user", PostUserInfo);
-            app.MapPut("/api/update-user/{game}/{level}", UpdateUserInfo);
+            app.MapPut("/api/update-user/{id}/{game}/{level}", UpdateUserInfo);
         }
 
         [ProducesResponseType(200)]
@@ -28,7 +28,7 @@ namespace GamesApi.Web.Endpoints.GamesEndpoints
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
         [FeatureGroupName("Users")]
-        private async Task<int> GetUserInfo([FromServices] IMediator mediator, HttpContext context, int id, int game)
+        private async Task<int> GetUserInfo([FromServices] IMediator mediator, HttpContext context, string id, int game)
            => await mediator.Send(new GetUserRequest(id,game), context.RequestAborted);
 
         [ProducesResponseType(200)]
@@ -40,7 +40,7 @@ namespace GamesApi.Web.Endpoints.GamesEndpoints
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
         [FeatureGroupName("Users")]
-        private async Task<string> UpdateUserInfo([FromServices] IMediator mediator, HttpContext context, int game,int level)
-            => await mediator.Send(new PutUserRequest(game,level), context.RequestAborted);
+        private async Task<int> UpdateUserInfo([FromServices] IMediator mediator, HttpContext context, string id,int game,int level)
+            => await mediator.Send(new PutUserRequest(id, game,level), context.RequestAborted);
     }
 }

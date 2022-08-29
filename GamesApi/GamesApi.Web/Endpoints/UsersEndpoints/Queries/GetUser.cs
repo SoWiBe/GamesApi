@@ -7,7 +7,7 @@ using MediatR;
 
 namespace GamesApi.Web.Endpoints.UsersEndpoints.Queries
 {
-    public record GetUserRequest(int id, int game) : IRequest<int>;
+    public record GetUserRequest(string id, int game) : IRequest<int>;
 
     public class GetUserRequestHandler : IRequestHandler<GetUserRequest, int>
     {
@@ -19,7 +19,7 @@ namespace GamesApi.Web.Endpoints.UsersEndpoints.Queries
             _mapper = mapper;
             _repository = repository;
         }
-
+         
         public async Task<int> Handle(GetUserRequest request, CancellationToken cancellationToken)
         {
             UserModel result = new UserModel();
@@ -37,11 +37,11 @@ namespace GamesApi.Web.Endpoints.UsersEndpoints.Queries
                 return -1;
             }
 
-            result.Id = id.ToString();
+            result.Id = id;
             
             try
             {
-                var userFromDb = _repository.GetRecordsByFilter(x => Convert.ToInt32(x.Id) == id);
+                var userFromDb = _repository.GetRecordsByFilter(x => x.Id == result.Id);
                 
                 if (userFromDb.Result.Result == null)
                 {
