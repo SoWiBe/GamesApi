@@ -7,10 +7,7 @@ namespace GamesApi.Web.Definitions.MongoDb.Models
         [BsonId]
         [BsonIgnoreIfNull]
         public string Id { get; set; }
-
-        [BsonElement("game")]
-        public string Game { get; set; }
-        [BsonElement("level")]
-        public string Level { get; set; }
+        [BsonElement("Levels")]
+        public IList<GameModel> Games { get; set; } = new List<GameModel>();
     }
 }
