@@ -43,13 +43,13 @@ namespace GamesApi.Web.Endpoints.UsersEndpoints.Queries
             {
                 var userFromDb = _repository.GetRecordsByFilter(x => Convert.ToInt32(x.Id) == id);
                 
-                if (userFromDb.Result.FirstOrDefault() == null)
+                if (userFromDb.Result.Result == null)
                 {
-                    _repository.AddNewRecord(result);
+                    await _repository.AddNewRecord(result);
                 }
                 else
                 {
-                    result = userFromDb.Result.FirstOrDefault();
+                    result = userFromDb.Result.Result;
                 }
             }
             catch (Exception ex)
