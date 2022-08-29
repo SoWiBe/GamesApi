@@ -1,8 +1,9 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using GamesApi.Infrastructure.MongoDb;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace GamesApi.Web.Definitions.MongoDb.Models
 {
-    public class UserModel
+    public class UserModel : IMongoModel
     {
         [BsonId]
         [BsonIgnoreIfNull]

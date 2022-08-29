@@ -15,14 +15,18 @@ namespace GamesApi.Web.Definitions.MongoDb
 
             services.AddTransient<IMongoClient>(provider => new MongoClient(connectionString));
 
-            services.AddSingleton<IMongoDbContext<UserModel>>(provider => new MongoDbContext<UserModel>(new Infrastructure.MongoDb.MongoDbSettings
+            services.AddSingleton<IDbWorker<UserModel>>(provider =>
             {
-                ConnectionString = connectionString,
-                CollectionName = configuration["Users:Collection"],
-                DbName = configuration["Users:Database"]
-            }, provider.GetRequiredService<IMongoClient>()));
-
-            services.AddSingleton<IDbWorker<UserModel>, MongoDbWorker<UserModel>>();
+                var client = provider.GetRequiredService<IMongoClient>();
+                var settings = new MongoDbSettings()
+                {
+                    ConnectionString = connectionString,
+                    CollectionName = configuration["Users:Collection"],
+                    DbName = configuration["Users:Database"]
+                };
+                var logger = provider.GetRequiredService<ILogger<MongoDbWorker<UserModel>>>();
+                return new MongoDbWorker<UserModel>(client, settings, logger);
+            });
         }
     }
 }

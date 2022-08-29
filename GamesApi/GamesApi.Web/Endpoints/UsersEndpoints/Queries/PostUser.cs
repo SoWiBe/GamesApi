@@ -19,18 +19,18 @@ namespace GamesApi.Web.Endpoints.UsersEndpoints.Queries
             _repository = repository;
         }
 
-        public Task<OperationResult<UserModel>> Handle(PostUserRequest request, CancellationToken cancellationToken)
+        public async Task<OperationResult<UserModel>> Handle(PostUserRequest request, CancellationToken cancellationToken)
         {
             try
             {
-                _repository.UpdateRecord(request.user);
+                await _repository.AddNewRecord(request.user);
             }
             catch (Exception ex)
             {
-                return Task.FromResult(new OperationResult<UserModel> { Exception = ex });
+                return new OperationResult<UserModel> { Exception = ex };
             }
 
-            return Task.FromResult(new OperationResult<UserModel> { Result = new UserModel { Id = request.user.Id, Games = request.user.Games } });
+            return new OperationResult<UserModel> { Result = new UserModel { Id = request.user.Id, Games = request.user.Games } };
         }
     }
 }

@@ -13,13 +13,13 @@ namespace GamesApi.Infrastructure.MongoDb
 {
     public class MongoDbWorker<T> : IDbWorker<T> where T : IMongoModel
     {
+        private readonly IMongoCollection<T> _collection;
         private readonly ILogger<MongoDbWorker<T>> _logger;
-        private readonly IMongoDbContext<T> _context;
 
-        public MongoDbWorker(ILogger<MongoDbWorker<T>> logger, IMongoDbContext<T> context)
+        public MongoDbWorker(IMongoClient client, MongoDbSettings settings, ILogger<MongoDbWorker<T>> logger)
         {
             _logger = logger;
-            _context = context;
+            _collection = client.GetDatabase(settings.DbName).GetCollection<T>(settings.CollectionName);
         }
 
         public async Task<OperationResult<bool>> AddNewRecord(T record)
@@ -27,7 +27,7 @@ namespace GamesApi.Infrastructure.MongoDb
             OperationResult<bool> result = new OperationResult<bool>();
             try
             {
-                await _context.GetCollection().InsertOneAsync(record);
+                await _collection.InsertOneAsync(record);
                 result.Result = true;
             } 
             catch(Exception e)
@@ -43,7 +43,7 @@ namespace GamesApi.Infrastructure.MongoDb
             OperationResult<bool> result = new OperationResult<bool>();
             try
             {
-                await _context.GetCollection().InsertManyAsync(records);
+                await _collection.InsertManyAsync(records);
                 result.Result = true;
             }
             catch (Exception e)
@@ -55,14 +55,29 @@ namespace GamesApi.Infrastructure.MongoDb
             return result;
         }
 
-        public Task<IEnumerable<T>> GetAllRecords()
+        public async Task<OperationResult<T>> GetRecordsByFilter(Func<T, bool> predicate)
         {
-            return Task.FromResult<IEnumerable<T>>(_context);
-        }
-        public Task<IEnumerable<T>> GetRecordsByFilter(Func<T, bool> predicate)
-        {
-            var result = _context.Where(predicate);
-            return Task.FromResult(result);
+            var result = new OperationResult<T>();
+
+            try
+            {
+                var tmp = _collection.AsQueryable().Where(predicate).FirstOrDefault();
+                if (tmp == null)
+                {
+                    var errorString = "Can't find an object";
+                    _logger.LogError(errorString);
+                    result.AddError(new Exception(errorString));
+                }
+
+                result.Result = tmp!;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                result.AddError(e);
+            }
+
+            return result;
         }
 
         public async Task<OperationResult<bool>> UpdateRecord(T record)
@@ -72,7 +87,7 @@ namespace GamesApi.Infrastructure.MongoDb
             try
             {
                 var filter = Builders<T>.Filter.Eq("_id", ObjectId.Parse(record.Id));
-                var updateResult = await _context.GetCollection().ReplaceOneAsync(filter, record);
+                var updateResult = await _collection.ReplaceOneAsync(filter, record);
 
                 result.Result = updateResult.IsModifiedCountAvailable;
             }
