@@ -7,5 +7,6 @@ namespace GamesApi.Domain.Base
         Task<IEnumerable<T>> GetRecordsByFilter(Func<T, bool> predicate);
         Task<OperationResult<bool>> AddNewRecord(T record);
         Task<OperationResult<bool>> AddNewRecordsRange(IEnumerable<T> records);
+        Task<OperationResult<bool>> UpdateRecord(T record);
     }
 }

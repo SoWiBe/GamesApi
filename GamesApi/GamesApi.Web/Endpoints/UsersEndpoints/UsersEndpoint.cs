@@ -14,7 +14,8 @@ namespace GamesApi.Web.Endpoints.GamesEndpoints
         public override void ConfigureApplication(WebApplication app, IWebHostEnvironment env)
         {
             app.MapGet("/api/get-users", GetUsers);
-            app.MapGet("/api/get-user/{id}", GetUserInfo);
+            app.MapGet("/api/get-user/{id}/{game}", GetUserInfo);
+            app.MapPost("/api/user", PostUserInfo);
         }
 
         [ProducesResponseType(200)]
@@ -26,7 +27,13 @@ namespace GamesApi.Web.Endpoints.GamesEndpoints
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
         [FeatureGroupName("Users")]
-        private async Task<OperationResult<UserModel>> GetUserInfo([FromServices] IMediator mediator, HttpContext context, Guid id)
-           => await mediator.Send(new GetUserRequest(id), context.RequestAborted);
+        private async Task<string> GetUserInfo([FromServices] IMediator mediator, HttpContext context, int id,string game)
+           => await mediator.Send(new GetUserRequest(id,game), context.RequestAborted);
+
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        [FeatureGroupName("Users")]
+        private async Task<OperationResult<UserModel>> PostUserInfo([FromServices] IMediator mediator, HttpContext context, UserModel user)
+            => await mediator.Send(new PostUserRequest(user), context.RequestAborted);
     }
 }
