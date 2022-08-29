@@ -15,6 +15,7 @@ namespace GamesApi.Web.Endpoints.GamesEndpoints
         {
             app.MapGet("/api/get-users", GetUsers);
             app.MapGet("/api/get-user/{id}/{game}", GetUserInfo);
+            app.MapPost("/api/user", PostUserInfo);
         }
 
         [ProducesResponseType(200)]
@@ -28,5 +29,11 @@ namespace GamesApi.Web.Endpoints.GamesEndpoints
         [FeatureGroupName("Users")]
         private async Task<string> GetUserInfo([FromServices] IMediator mediator, HttpContext context, int id,string game)
            => await mediator.Send(new GetUserRequest(id,game), context.RequestAborted);
+
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        [FeatureGroupName("Users")]
+        private async Task<OperationResult<UserModel>> PostUserInfo([FromServices] IMediator mediator, HttpContext context, UserModel user)
+            => await mediator.Send(new PostUserRequest(user), context.RequestAborted);
     }
 }

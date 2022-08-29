@@ -1,6 +1,8 @@
 ﻿using Calabonga.OperationResults;
 using GamesApi.Infrastructure.MongoDb.Context;
 using Microsoft.Extensions.Logging;
+using MongoDB.Bson;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace GamesApi.Infrastructure.MongoDb
 {
-    public class MongoDbWorker<T> : IDbWorker<T>
+    public class MongoDbWorker<T> : IDbWorker<T> where T : IMongoModel
     {
         private readonly ILogger<MongoDbWorker<T>> _logger;
         private readonly IMongoDbContext<T> _context;
@@ -61,6 +63,26 @@ namespace GamesApi.Infrastructure.MongoDb
         {
             var result = _context.Where(predicate);
             return Task.FromResult(result);
+        }
+
+        public async Task<OperationResult<bool>> UpdateRecord(T record)
+        {
+            var result = new OperationResult<bool>();
+
+            try
+            {
+                var filter = Builders<T>.Filter.Eq("_id", ObjectId.Parse(record.Id));
+                var updateResult = await _context.GetCollection().ReplaceOneAsync(filter, record);
+
+                result.Result = updateResult.IsModifiedCountAvailable;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                result.AddError(e);
+            }
+
+            return result;
         }
     }
 }
