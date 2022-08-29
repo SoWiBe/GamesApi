@@ -24,17 +24,19 @@ namespace GamesApi.Web.Endpoints.UsersEndpoints.Queries
         {
             UserModel result = new UserModel();
             GameModel level = new GameModel();
-            var operation = OperationResult.CreateResult<UserModel>();
+
             for (int i = 1; i <= 11; i++) {
                 result.Games.Add(new GameModel { Level = "1" });
             }
+
             var id = request.id;
             var game = request.game;
+
             if(id == null)
             {
                 return "no id";
-               
             }
+
             result.Id = id.ToString();
             
             try
@@ -52,7 +54,7 @@ namespace GamesApi.Web.Endpoints.UsersEndpoints.Queries
             }
             catch (Exception ex)
             {
-                operation.AddError(ex);
+                return "Error: " + ex.Message;
             }
 
 
