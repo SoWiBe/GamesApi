@@ -26,7 +26,7 @@ namespace GamesApi.Web.Endpoints.GamesEndpoints
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
         [FeatureGroupName("Users")]
-        private async Task<OperationResult<string>> GetUserInfo([FromServices] IMediator mediator, HttpContext context, int id,string game)
+        private async Task<string> GetUserInfo([FromServices] IMediator mediator, HttpContext context, int id,string game)
            => await mediator.Send(new GetUserRequest(id,game), context.RequestAborted);
     }
 }
