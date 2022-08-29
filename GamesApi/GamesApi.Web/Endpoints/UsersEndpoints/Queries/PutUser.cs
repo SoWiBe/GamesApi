@@ -6,9 +6,9 @@ using MediatR;
 
 namespace GamesApi.Web.Endpoints.UsersEndpoints.Queries
 {
-    public record PutUserRequest(UserModel model) : IRequest<string>;
+    public record PutUserRequest(int game,int level) : IRequest<int>;
 
-    public class PutUserRequestHandler : IRequestHandler<PutUserRequest, string>
+    public class PutUserRequestHandler : IRequestHandler<PutUserRequest, int>
     {
         private readonly IMapper _mapper;
         private readonly IDbWorker<UserModel> _repository;
@@ -19,18 +19,20 @@ namespace GamesApi.Web.Endpoints.UsersEndpoints.Queries
             _repository = repository;
         }
 
-        public async Task<string> Handle(PutUserRequest request, CancellationToken cancellationToken)
+        public async Task<int> Handle(PutUserRequest request, CancellationToken cancellationToken)
         {
+            var record = _repository.GetRecordsByFilter(id);
+            record.Result.Result.Games[request.game].Level = request.level;
             try
             {
-                await _repository.AddNewRecord(request.model);
+                await _repository.UpdateRecord(record.Result.Result);
             }
             catch (Exception ex)
             {
-                return "Error: " + ex.Message;
+                return -1;
             }
 
-            return "Success!";
+            return 0;
         }
     }
 
