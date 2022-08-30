@@ -40,7 +40,7 @@ namespace GamesApi.Web.Endpoints.GamesEndpoints
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
         [FeatureGroupName("Users")]
-        private async Task<int> UpdateUserInfo([FromServices] IMediator mediator, HttpContext context, PutModel user)
+        private async Task<OperationResult<string>> UpdateUserInfo([FromServices] IMediator mediator, HttpContext context, PutModel user)
             => await mediator.Send(new PutUserRequest(user), context.RequestAborted);
     }
 }
