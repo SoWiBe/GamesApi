@@ -7,9 +7,9 @@ using MediatR;
 
 namespace GamesApi.Web.Endpoints.UsersEndpoints.Queries
 {
-    public record GetUserRequest(GetModel user) : IRequest<int>;
+    public record GetUserRequest(GetModel user) : IRequest<OperationResult<int>>;
 
-    public class GetUserRequestHandler : IRequestHandler<GetUserRequest, int>
+    public class GetUserRequestHandler : IRequestHandler<GetUserRequest, OperationResult<int>>
     {
         private readonly IMapper _mapper;
         private readonly IDbWorker<UserModel> _repository;
@@ -20,7 +20,7 @@ namespace GamesApi.Web.Endpoints.UsersEndpoints.Queries
             _repository = repository;
         }
          
-        public async Task<int> Handle(GetUserRequest request, CancellationToken cancellationToken)
+        public async Task<OperationResult<int>> Handle(GetUserRequest request, CancellationToken cancellationToken)
         {
             UserModel result = new UserModel();
             GameModel level = new GameModel();
@@ -34,7 +34,7 @@ namespace GamesApi.Web.Endpoints.UsersEndpoints.Queries
 
             if(id == null)
             {
-                return -1;
+                return new OperationResult<int> { Exception = new Exception("No id") };
             }
 
             result.Id = id;
@@ -54,11 +54,11 @@ namespace GamesApi.Web.Endpoints.UsersEndpoints.Queries
             }
             catch (Exception ex)
             {
-                return -1;
+                return new OperationResult<int> { Exception = ex };
             }
 
 
-            return result.Games[request.user.Game].Level;
+            return new OperationResult<int> { Result = result.Games[request.user.Game].Level };
         }
     }
 }

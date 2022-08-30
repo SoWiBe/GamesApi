@@ -28,7 +28,7 @@ namespace GamesApi.Web.Endpoints.GamesEndpoints
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
         [FeatureGroupName("Users")]
-        private async Task<int> GetUserInfo([FromServices] IMediator mediator, HttpContext context, GetModel user)
+        private async Task<OperationResult<int>> GetUserInfo([FromServices] IMediator mediator, HttpContext context, GetModel user)
            => await mediator.Send(new GetUserRequest(user), context.RequestAborted);
 
         [ProducesResponseType(200)]
@@ -40,7 +40,7 @@ namespace GamesApi.Web.Endpoints.GamesEndpoints
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
         [FeatureGroupName("Users")]
-        private async Task<int> UpdateUserInfo([FromServices] IMediator mediator, HttpContext context, PutModel user)
+        private async Task<OperationResult<string>> UpdateUserInfo([FromServices] IMediator mediator, HttpContext context, PutModel user)
             => await mediator.Send(new PutUserRequest(user), context.RequestAborted);
     }
 }

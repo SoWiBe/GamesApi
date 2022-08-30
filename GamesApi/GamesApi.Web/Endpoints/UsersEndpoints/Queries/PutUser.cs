@@ -6,9 +6,9 @@ using MediatR;
 
 namespace GamesApi.Web.Endpoints.UsersEndpoints.Queries
 {
-    public record PutUserRequest(PutModel user) : IRequest<int>;
+    public record PutUserRequest(PutModel user) : IRequest<OperationResult<string>>;
 
-    public class PutUserRequestHandler : IRequestHandler<PutUserRequest, int>
+    public class PutUserRequestHandler : IRequestHandler<PutUserRequest, OperationResult<string>>
     {
         private readonly IMapper _mapper;
         private readonly IDbWorker<UserModel> _repository;
@@ -19,7 +19,7 @@ namespace GamesApi.Web.Endpoints.UsersEndpoints.Queries
             _repository = repository;
         }
 
-        public async Task<int> Handle(PutUserRequest request, CancellationToken cancellationToken)
+        public async Task<OperationResult<string>> Handle(PutUserRequest request, CancellationToken cancellationToken)
         {
             
             var record = _repository.GetRecordsByFilter(x => x.Id == request.user.Id);
@@ -30,10 +30,10 @@ namespace GamesApi.Web.Endpoints.UsersEndpoints.Queries
             }
             catch (Exception ex)
             {
-                return -1;
+                return new OperationResult<string> { Exception = ex };
             }
 
-            return 0;
+            return new OperationResult<string> { Result = "User was successfully added!" };
         }
     }
 
