@@ -6,7 +6,7 @@ using MediatR;
 
 namespace GamesApi.Web.Endpoints.UsersEndpoints.Queries
 {
-    public record PutUserRequest(string id,int game,int level) : IRequest<int>;
+    public record PutUserRequest(PutModel user) : IRequest<int>;
 
     public class PutUserRequestHandler : IRequestHandler<PutUserRequest, int>
     {
@@ -22,8 +22,8 @@ namespace GamesApi.Web.Endpoints.UsersEndpoints.Queries
         public async Task<int> Handle(PutUserRequest request, CancellationToken cancellationToken)
         {
             
-            var record = _repository.GetRecordsByFilter(x => x.Id == request.id);
-            record.Result.Result.Games[request.game].Level = request.level;
+            var record = _repository.GetRecordsByFilter(x => x.Id == request.user.Id);
+            record.Result.Result.Games[request.user.Game].Level = request.user.Level;
             try
             {
                 await _repository.UpdateRecord(record.Result.Result);

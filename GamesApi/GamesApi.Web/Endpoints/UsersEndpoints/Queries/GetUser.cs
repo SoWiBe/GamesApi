@@ -7,7 +7,7 @@ using MediatR;
 
 namespace GamesApi.Web.Endpoints.UsersEndpoints.Queries
 {
-    public record GetUserRequest(string id, int game) : IRequest<int>;
+    public record GetUserRequest(GetModel user) : IRequest<int>;
 
     public class GetUserRequestHandler : IRequestHandler<GetUserRequest, int>
     {
@@ -29,8 +29,8 @@ namespace GamesApi.Web.Endpoints.UsersEndpoints.Queries
                 result.Games.Add(new GameModel { Level = 1 });
             }
 
-            var id = request.id;
-            var game = request.game;
+            var id = request.user.Id;
+            var game = request.user.Game;
 
             if(id == null)
             {
@@ -58,7 +58,7 @@ namespace GamesApi.Web.Endpoints.UsersEndpoints.Queries
             }
 
 
-            return result.Games[game].Level;
+            return result.Games[request.user.Game].Level;
         }
     }
 }
