@@ -28,9 +28,5 @@
     <ProjectReference Include="..\GamesApi.Infrastructure\GamesApi.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Endpoints\UsersEndpoints\ViewModels\" />
-  </ItemGroup>
-
 
 </Project>
