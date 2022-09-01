@@ -21,7 +21,6 @@ namespace GamesApi.Web.Endpoints.UsersEndpoints.Queries
 
         public async Task<OperationResult<string>> Handle(PutUserRequest request, CancellationToken cancellationToken)
         {
-            
             var record = _repository.GetRecordsByFilter(x => x.Id == request.user.Id);
             record.Result.Result.Games[request.user.Game].Level = request.user.Level;
             try
