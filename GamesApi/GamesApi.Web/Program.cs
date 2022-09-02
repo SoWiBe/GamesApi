@@ -44,7 +44,7 @@ try
     // create application
     var app = builder.Build();
     app.UseDefinitions();
-    app.UseCors("CorsPolicy");
+    app.UseCors("ApiCorsPolicy");
 
     // start application
     app.Run();
