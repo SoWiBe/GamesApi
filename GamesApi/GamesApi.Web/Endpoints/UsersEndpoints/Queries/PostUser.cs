@@ -21,7 +21,6 @@ namespace GamesApi.Web.Endpoints.UsersEndpoints.Queries
 
         public async Task<OperationResult<UserModel>> Handle(PostUserRequest request, CancellationToken cancellationToken)
         {
-
             try
             {
                 await _repository.AddNewRecord(request.user);
