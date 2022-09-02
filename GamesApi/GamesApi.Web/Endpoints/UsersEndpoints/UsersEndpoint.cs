@@ -15,7 +15,6 @@ namespace GamesApi.Web.Endpoints.GamesEndpoints
             app.MapGet("/api/get-user/{id}/{game}", GetUserInfo);
             app.MapPost("/api/add-user", PostUserInfo);
             app.MapPut("/api/update-user/", UpdateUserInfo);
-            app.UseCors("CorsPolicy");
 
         }
           
