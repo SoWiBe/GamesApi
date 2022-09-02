@@ -15,15 +15,13 @@ namespace GamesApi.Web.Definitions.Cors
         /// <param name="configuration"></param>
         public override void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         {
-            
-            services.AddCors(options =>
-            {
-                options.AddPolicy("CorsPolicy",
-                builder => builder.AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader());
 
-            });
+            services.AddCors(options => options.AddPolicy("ApiCorsPolicy", builder =>
+            {
+                builder.WithOrigins("http://localhost:20001").AllowAnyMethod().AllowAnyHeader();
+            }));
+
+            services.AddMvc();
         }
     }
 }
