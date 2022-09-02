@@ -78,23 +78,23 @@ namespace GamesApi.Web.Definitions.Swagger
                     return tags;
                 });
 
-                var url = configuration.GetSection("AuthServer").GetValue<string>("Url");
+                //var url = configuration.GetSection("AuthServer").GetValue<string>("Url");
 
-                options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
-                {
-                    Type = SecuritySchemeType.OAuth2,
-                    Flows = new OpenApiOAuthFlows
-                    {
-                        Password = new OpenApiOAuthFlow
-                        {
-                            TokenUrl = new Uri($"{url}/connect/token", UriKind.Absolute),
-                            Scopes = new Dictionary<string, string>
-                            {
-                            { "api", "Default scope" }
-                            }
-                        }
-                    }
-                });
+                //options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                //{
+                //    Type = SecuritySchemeType.OAuth2,
+                //    Flows = new OpenApiOAuthFlows
+                //    {
+                //        Password = new OpenApiOAuthFlow
+                //        {
+                //            TokenUrl = new Uri($"{url}/connect/token", UriKind.Absolute),
+                //            Scopes = new Dictionary<string, string>
+                //            {
+                //            { "api", "Default scope" }
+                //            }
+                //        }
+                //    }
+                //});
                 options.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                 {
